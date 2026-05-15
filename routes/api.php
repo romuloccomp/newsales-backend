@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CustomerController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -20,4 +21,9 @@ Route::middleware(['cognito'])->group(function () {
     Route::post('/refresh', [AuthController::class, 'refresh']);
 
     Route::post('/change-password', [AuthController::class, 'changePassword']);
+
+    Route::get('/customers', [CustomerController::class, 'index']);
+
+    Route::get('/customer/{cnpj}', [CustomerController::class, 'show']);
+
 });
