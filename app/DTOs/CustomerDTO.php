@@ -21,7 +21,6 @@ class CustomerDTO
 
     public static function fromArray(array $data): self
     {
-        dd($data);
         return new self(
             codigo: $data['codigo'],
             nome: $data['nome'] ?? "",
