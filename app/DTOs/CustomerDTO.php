@@ -15,6 +15,7 @@ class CustomerDTO
         public readonly string $cnpj,
         public readonly string $inscricaoEstadual,
         public readonly string $transportadora,
+        public readonly string $nr_tabpre,
         public readonly string $vsearch,
     ) {}
 
@@ -31,6 +32,7 @@ class CustomerDTO
             cnpj: $data['cgc'] ?? "",
             inscricaoEstadual: $data['ins-estadual'] ?? "",
             transportadora: $data['transp-nome'] ?? "",
+            nr_tabpre: $data['nr_tabpre'],
             vsearch: $data["vsearch"] ?? ""
         );
     }
@@ -48,6 +50,7 @@ class CustomerDTO
             'cnpj' => $this->cnpj,
             'inscricaoEstadual' => $this->inscricaoEstadual,
             'transportadora' => $this->transportadora,
+            'nr_tabpre' => $this->nr_tabpre,
             'vsearch' => $this->vsearch
         ];
     }
