@@ -12,7 +12,7 @@ docker build -t forno-backend .
 ### Run
 
 ```bash
-docker run -d -p 8080:80 --name forno-backend --network forno-network forno-backend
+docker run -d -p 8000:80 --name forno-backend --network forno-network forno-backend
 ```
 ### Migrations
 
