@@ -3,11 +3,11 @@
 ### Build
 
 ```bash
-docker network create api-network
+docker network create forno-network
 ```
 
 ```bash
-docker build -t admin-forno .
+docker build -t forno-backend .
 ```
 ### Run
 
