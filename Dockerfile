@@ -1,41 +1,33 @@
-FROM php:8.4-fpm
+FROM php:8.4-cli
 
-# Instalar pacotes
+# Instalação de dependências do sistema e extensões necessárias para o Laravel 12
 RUN apt-get update && apt-get install -y \
-    nginx \
-    git \
-    curl \
-    zip \
-    unzip \
     libpng-dev \
     libonig-dev \
     libxml2-dev \
-    libpq-dev \
-    supervisor \
-    && docker-php-ext-install pdo pdo_mysql pdo_pgsql mbstring exif pcntl bcmath gd
+    zip \
+    unzip \
+    git \
+    curl \
+    && docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd
 
-# Instalar composer
+# Instala o Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Diretório da aplicação
-WORKDIR /var/www
+# Define o diretório de trabalho
+WORKDIR /var/www/html
 
-# Copiar projeto
-COPY . /var/www
+# Copia os arquivos da aplicação
+COPY . .
 
-# Instalar dependências
-RUN composer install --no-dev --optimize-autoloader
+# Permissões do Laravel para storage e cache
+RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
-# Permissões
-RUN chown -R www-data:www-data /var/www \
-    && chmod -R 775 storage bootstrap/cache
+# Instala as dependências PHP da aplicação
+RUN composer install --optimize-autoloader --no-dev
 
-# Config nginx
-COPY nginx.conf /etc/nginx/sites-available/default
+# Expõe a porta que será utilizada pelo servidor PHP
+EXPOSE 8000
 
-# Supervisor
-COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
-
-EXPOSE 80
-
-CMD ["/usr/bin/supervisord"]
+# Script ou comando de inicialização
+CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8000"]

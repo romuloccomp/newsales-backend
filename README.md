@@ -1,13 +1,21 @@
 ## Dockering app
 
 ### Build
+
+```bash
 docker network create api-network
+```
 
+```bash
 docker build -t admin-forno .
-
+```
 ### Run
-docker run -d -p 8080:80 --name admin-forno --network api-network admin-forno
 
+```bash
+docker run -d -p 8080:80 --name forno-backend --network forno-network forno-backend
+```
 ### Migrations
 
-docker exec -it admin-forno php artisan migrate
+```bash
+docker exec -it forno-backend php artisan migrate
+```
