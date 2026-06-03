@@ -5,11 +5,15 @@ RUN apt-get update && apt-get install -y \
     libpng-dev \
     libonig-dev \
     libxml2-dev \
+    libpq-dev \
     zip \
     unzip \
     git \
     curl \
-    && docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd
+    && rm -rf /var/lib/apt/lists/*
+
+# instala postgres driver
+RUN docker-php-ext-install pdo pdo_pgsql
 
 # Instala o Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
