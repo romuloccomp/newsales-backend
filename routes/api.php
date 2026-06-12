@@ -2,8 +2,10 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\PedidoController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
+use App\Jobs\ProcessQueue;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
