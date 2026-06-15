@@ -21,3 +21,14 @@ docker run -d -p 8000:8000 --name forno-backend --network forno-network forno-ba
 ```bash
 docker exec -it forno-backend php artisan migrate
 ```
+
+### Database container
+
+```bash
+docker run --name forno_db \
+  --network forno-network \
+  -e POSTGRES_USER=forno \
+  -e POSTGRES_PASSWORD=F0rno@2026$ \
+  -p 5432:5432 \
+  -d postgres:17
+```
