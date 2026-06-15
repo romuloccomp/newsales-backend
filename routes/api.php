@@ -36,6 +36,6 @@ Route::middleware(['cognito'])->group(function () {
 
 });
 
- Route::put('/orders', [OrderController::class, 'update']);
+Route::put('/orders/{order}', [OrderController::class, 'update']);
 
-     Route::get('/orders', [OrderController::class, 'index']);
+Route::get('/orders', [OrderController::class, 'index']);

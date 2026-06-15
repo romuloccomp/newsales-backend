@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('items_order', function (Blueprint $table) {
+        Schema::create('item_orders', function (Blueprint $table) {
             $table->id();
             $table->foreignId('order_id')->constrained('orders')->cascadeOnDelete();
             $table->timestamps();
@@ -19,17 +19,17 @@ return new class extends Migration
             $table->float('preco_min');
             $table->text('vsearch');
             $table->string('it_codigo');
-            $table->integer('quant_min');
+            $table->float('quant_min');
             $table->string('sub_familia');
             $table->float('peso_liquido');
             $table->text('descricao');
             $table->tinyText('un');
             $table->float('preco_venda');
-            $table->integer('qt_estoque');
+            $table->float('qt_estoque');
             $table->string('nr_tabpre');
             $table->string('fm_codigo');
             $table->string('fm_descricao');
-            $table->integer('quantidade');
+            $table->float('quantidade');
             $table->float('preco');
         });
     }
@@ -39,6 +39,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('items_orders');
+        Schema::dropIfExists('itemorder');
     }
 };

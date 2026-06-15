@@ -6,10 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class ItemOrder extends Model
 {
-    protected $table = 'items_order';
 
     protected $fillable = [
-        // 'order_id',
+        'order_id',
         'cod_refer',
         'preco_min',
         'vsearch',

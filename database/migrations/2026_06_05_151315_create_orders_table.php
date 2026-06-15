@@ -27,7 +27,7 @@ return new class extends Migration
             $table->text('descricao_avaliacao')->nullable();
             $table->string('email_supervisor')->nullable();
             $table->string('email_gerente')->nullable();
-            $table->string('nr_pedido')->nullable();
+            $table->integer('nr_pedido')->nullable();
             $table->text('situacao_integracao')->nullable();
             $table->text('retorno_integracao')->nullable();
             $table->float('valor_total')->nullable();

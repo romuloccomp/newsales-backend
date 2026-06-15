@@ -114,72 +114,70 @@ class OrderController extends Controller
      */
     public function update(Request $request, Order $order)
     {
-        return DB::transaction(function () use ($request, $order) {
 
-            $order->whereId($request->ped_venda['id'])->update([
-                'id' => $request->ped_venda['id'],
-                'nr_pedcli' => $request->ped_venda['nr_pedcli'],
-                'cod_rep' => $request->ped_venda['cod_rep'],
-                'cod_emitente' => $request->ped_venda['cod_emitente'],
-                'nr_tabpre' => $request->ped_venda['nr_tabpre'],
-                'dt_entrega' => $request->ped_venda['dt_entrega'],
-                'observacoes' => $request->ped_venda['observacoes'],
-                'tipo_pedido' => $request->ped_venda['tipo_pedido'],
-                'situacao_avaliacao' => $request->ped_venda['situacao_avaliacao'],
-                'avaliador' => $request->ped_venda['avaliador'],
-                'avaliado_em' => $request->ped_venda['avaliado_em'],
-                'descricao_avaliacao' => $request->ped_venda['descricao_avaliacao'],
-                'email_supervisor' => $request->ped_venda['email_supervisor'],
-                'email_gerente' => $request->ped_venda['email_gerente'],
-                'nr_pedido' => $request->ped_venda['nr_pedido'],
-                'situacao_integracao' => $request->ped_venda['situacao_integracao'],
-                'retorno_integracao' => $request->ped_venda['retorno_integracao'],
-                'frete' => $request->ped_venda['frete'],
-            ]);
+        // print_r($request->ped_venda['nr_pedcli']);
+        // echo "request: ";
+        // dd($request);
 
-            $idsReceived = [];
-            $total = 0;
+        $data  = $request->validate([
+                    'ped_venda'              => 'required|array',
+                    'ped_venda.nr_pedcli'    => 'sometimes|required|string|max:255',
+                    'ped_venda.cod_rep'      => 'sometimes|required|string|max:255',
+                    'ped_venda.cod_emitente' => 'sometimes|required|integer',
+                    'ped_venda.nr_tabpre'    => 'sometimes|required|string|max:255',
+                    'ped_venda.dt_entrega'   => 'sometimes|required|date', 
+                    'ped_venda.frete'        => 'sometimes|required|boolean',
+                    'ped_venda.tipo_pedido'  => 'sometimes|required|string|in:venda,bonificação,Venda,Bonificação',
+                    'ped_venda.observacoes'  => 'nullable|string',
+                    'ped_venda.situacao_avaliacao'  => 'nullable|string|in:pendente,aprovado,rejeitado,avaliação',
+                    'ped_venda.avaliador'           => 'nullable|string|max:255',
+                    'ped_venda.avaliado_em'         => 'nullable|blank_or:date',
+                    'ped_venda.descricao_avaliacao' => 'nullable|string',
+                    'ped_venda.email_supervisor'    => 'nullable|email|max:255',
+                    'ped_venda.email_gerente'       => 'nullable|email|max:255',
+                    'ped_venda.situacao_integracao' => 'nullable|string',
+                    'ped_venda.retorno_integracao'  => 'nullable|string',
+                ]);
 
-            foreach ($request->ped_item as $item) {
+        $order->update($data['ped_venda']);
 
-                $subtotal = $item['quantidade'] * $item['preco_venda'];
+        if ($request->has('ped_item')) {
 
-                if (isset($item['id'])) {
-                    $itemOrder = $order->items()
-                        ->whereId($item['id'])
-                        ->firstOrFail();
+            // Opcional: Coleta os IDs enviados para deletar itens que sumiram do frontend
+            $itensEnviadosIds = collect($request->ped_item)->pluck('id')->filter()->toArray();
 
+            // Deleta do banco APENAS os itens que foram removidos na tela pelo usuário
+            $order->items()->whereNotIn('id', $itensEnviadosIds)->delete();
 
-                    $itemOrder->update([
-                        'quantidade' => $item['quantidade'],
-                        'preco_venda' => $item['preco_venda'],
-                    ]);
+            foreach ($request->ped_item as $itemData) {
+                $order->items()->updateOrCreate(
+                    // Condição para encontrar o registro: Se tiver ID, atualiza. Se não tiver ID (nulo), cria um novo.
+                    ['id' => $itemData['id'] ?? null],
 
-                    $idsReceived[] = $itemOrder->id;
-                } else {
-                    $newItem = $order->items()->create([
-                        'quantidade' => $item['quantidade'],
-                        'preco_venda' => $item['preco_venda'],
-                    ]);
-
-                    $idsReceived[] = $newItem->id;
-                }
-
-                $total += $subtotal;
+                    // Dados que serão atualizados ou inseridos no banco
+                    [
+                        'cod_refer'    => !empty($itemData['cod_refer']) ? $itemData['cod_refer'] : null,
+                        'preco_min'    => $itemData['preco_min'] ?? 0,
+                        'vsearch'      => $itemData['vsearch'] ?? null,
+                        'it_codigo'    => $itemData['it_codigo'],
+                        'quant_min'    => $itemData['quant_min'] ?? 0,
+                        'sub_familia'  => $itemData['sub_familia'] ?? null,
+                        'peso_liquido' => $itemData['peso_liquido'] ?? 0,
+                        'descricao'    => $itemData['descricao'],
+                        'un'           => $itemData['un'],
+                        'preco_venda'  => $itemData['preco_venda'] ?? 0,
+                        'qt_estoque'   => $itemData['qt_estoque'] ?? 0,
+                        'nr_tabpre'    => $itemData['nr_tabpre'] ?? null,
+                        'fm_codigo'    => $itemData['fm_codigo'] ?? null,
+                        'fm_descricao' => $itemData['fm_descricao'] ?? null,
+                        'quantidade'   => $itemData['quantidade'],
+                        'preco'        => $itemData['preco'],
+                    ]
+                );
             }
+        }
 
-            $order->items()
-                ->whereNotIn('id', $idsReceived)
-                ->delete();
-
-            $order->update([
-                'valor_total' => $total
-            ]);
-
-            return $order->load('items');
-        });
-
-        return response()->json($results, 200);
+        return response()->json($order->load('items'));
     }
 
     /**
