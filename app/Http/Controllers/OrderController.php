@@ -125,7 +125,7 @@ class OrderController extends Controller
                     'ped_venda.cod_rep'      => 'sometimes|required|string|max:255',
                     'ped_venda.cod_emitente' => 'sometimes|required|integer',
                     'ped_venda.nr_tabpre'    => 'sometimes|required|string|max:255',
-                    'ped_venda.dt_entrega'   => 'sometimes|required|date', 
+                    'ped_venda.dt_entrega'   => 'sometimes|required|date',
                     'ped_venda.frete'        => 'sometimes|required|boolean',
                     'ped_venda.tipo_pedido'  => 'sometimes|required|string|in:venda,bonificação,Venda,Bonificação',
                     'ped_venda.observacoes'  => 'nullable|string',
@@ -186,5 +186,7 @@ class OrderController extends Controller
     public function destroy(Order $order)
     {
         //
+        $result = $order->delete();
+        return $result;
     }
 }
