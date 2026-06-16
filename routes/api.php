@@ -31,8 +31,7 @@ Route::middleware(['cognito'])->group(function () {
 
     Route::post('/orders', [OrderController::class, "store"]);
     Route::get('/orders', [OrderController::class, 'index']);
-    Route::get('/orders/{id}', [OrderController::class, 'show']);
-    Route::put('/orders/{id}', [OrderController::class, 'update']);
+    Route::get('/orders/{order}', [OrderController::class, 'show']);
+    Route::put('/orders/{order}', [OrderController::class, 'update']);
     Route::delete('/order/{order}', [OrderController::class, 'destroy']);
 });
-
