@@ -14,7 +14,8 @@ class OrderController extends Controller
      */
     public function index()
     {
-        return Order::with('items')->get();
+        $results = Order::with('items')->get();
+        return response()->json($results);
     }
 
     /**
@@ -87,10 +88,11 @@ class OrderController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(string $order)
     {
-        return Order::with('items')
-            ->findOrFail($id);
+        $results = Order::with('items')
+            ->findOrFail($order);
+        return response()->json($results);
     }
 
     /**
