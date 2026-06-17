@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\PedidoController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
 use App\Jobs\ProcessQueue;
 use Illuminate\Http\Request;
@@ -20,16 +21,17 @@ Route::middleware(['cognito'])->group(function () {
     Route::get('/user', function (Request $request) {
         return response()->json($request->attributes->get('user'));
     });
-
     Route::post('/refresh', [AuthController::class, 'refresh']);
-
     Route::post('/change-password', [AuthController::class, 'changePassword']);
 
     Route::get('/customers', [CustomerController::class, 'index']);
-
-    Route::get('/customer/{cnpj}', [CustomerController::class, 'show']);
+    Route::get('/customers/{cnpj}', [CustomerController::class, 'show']);
 
     Route::get('/products', [ProductController::class, 'index']);
-});
 
-Route::post('/pedidos', [PedidoController::class , 'store']);
+    Route::post('/orders', [OrderController::class, "store"]);
+    Route::get('/orders', [OrderController::class, 'index']);
+    Route::get('/orders/{order}', [OrderController::class, 'show']);
+    Route::put('/orders/{order}', [OrderController::class, 'update']);
+    Route::delete('/order/{order}', [OrderController::class, 'destroy']);
+});
