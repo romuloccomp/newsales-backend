@@ -30,6 +30,13 @@ class Order extends Model
         'valor_total'
     ];
 
+    protected function casts(): array
+    {
+        return [
+            'dt_entrega' => 'datetime:c'
+        ];
+    }
+
     public function items()
     {
         return $this->hasMany(ItemOrder::class);

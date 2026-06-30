@@ -34,4 +34,5 @@ Route::middleware(['cognito'])->group(function () {
     Route::get('/orders/{order}', [OrderController::class, 'show']);
     Route::put('/orders/{order}', [OrderController::class, 'update']);
     Route::delete('/order/{order}', [OrderController::class, 'destroy']);
+    Route::get('/pedidos-aprovacao', [OrderController::class, 'ordersApproval']);
 });

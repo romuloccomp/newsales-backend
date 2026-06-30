@@ -17,13 +17,13 @@ return new class extends Migration
             $table->string('cod_rep')->nullable(false);
             $table->string('cod_emitente')->nullable(false);
             $table->string('nr_tabpre')->nullable(false);
-            $table->date('dt_entrega');
+            $table->timestampTz('dt_entrega');
             $table->text('observacoes')->nullable();
             $table->boolean('frete');
             $table->string('tipo_pedido'); //Bonificação | Venda
             $table->string('situacao_avaliacao')->default("pendente"); //pendente | aprovado | rejeitado
             $table->string('avaliador')->nullable();
-            $table->timestamp('avaliado_em')->nullable();
+            $table->timestampTz('avaliado_em')->nullable();
             $table->text('descricao_avaliacao')->nullable();
             $table->string('email_supervisor')->nullable();
             $table->string('email_gerente')->nullable();

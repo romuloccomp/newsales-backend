@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Order;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class OrderController extends Controller
@@ -169,10 +170,27 @@ class OrderController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Order $order)
+    public function destroy(Request $request, Order $order)
     {
-        //
-        $result = $order->delete();
+        $result = $order->delete($request->order);
         return $result;
+    }
+
+    public function ordersApproval(Request $request)
+    {
+        $status = $request->situacao_avaliacao;
+        $itemsPerPage = $request->itemsPerPage;
+
+        $orders = Order::query()
+            ->when($status, function($query, $status) {
+                return $query->where('situacao_avaliacao', $status);
+            })
+            ->simplePaginate($itemsPerPage);
+
+        $orders->appends([
+            'status' => $status
+        ]);
+
+        return response()->json($orders);
     }
 }
